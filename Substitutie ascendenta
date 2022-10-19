@@ -1,0 +1,44 @@
+import numpy as np
+#substitutie ascendenta
+def CondSubAsc(A,b):
+    if np.shape(A)[0]!=np.shape(A)[1]:
+        print("Matricea nu este patratica")
+        return False
+    if np.shape(A)[0]!=np.shape(b)[0]:
+        print("Matricea A si vectorul b nu sunt compatibili")
+        return False
+    for i in range(np.shape(A)[0]):
+        if A[i,i]==0:
+            print("Matricea sistemului nu este inversabila")
+            return False
+        for j in range(i+1,np.shape(A)[1]):
+            if A[i,j]!=0:
+                print("Matricea sistemului nu este inferior triunghiulara")
+                return False
+    print("Se poate aplica metoda substitutiei ascendente")
+    return True        
+            
+def SubAsc(A,b):
+    CondSubAsc(A,b)
+    if(CondSubAsc(A,b)):
+        n=len(b)
+        x=np.zeros((n,1))
+        x[0]=b[0]/A[0,0]
+        for k in range(1,n):
+            x[k]=(b[k]-A[k,0:k]@x[0:k])/A[k,k]
+            print(x)
+            return x
+A=np.array([[2.,0,0],
+            [-1,5,0],
+            [-2,4,1]])
+
+b=np.array([[2.],
+            [3],
+            [3]])
+x=SubAsc(A,b)
+print(x)
+    
+    
+    
+    
+
