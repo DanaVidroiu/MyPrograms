@@ -1,0 +1,72 @@
+#Metoda Gauss cu Pivotare Toatala
+import numpy as np
+def CondSubDesc(A,b):
+    if np.shape(A)[0]!=np.shape(A)[1]:
+        print("Matricea sistemului nu este patratica")
+        return False
+    if np.shape(A)[0]!=np.shape(b)[0]:
+        print("Matricea sistemului si vectorul b nu sunt compatibili")
+        return False
+    for i in range(np.shape(A)[0]):
+        if A[i,i]==0:
+            print("Matricea sistemului nu este inversabila")
+            return False
+        for j in range(i):
+            if A[i,j]!=0:
+                print("Matricea sistemului nu este superior triunghiulara")
+                return False
+    print("Se poate aplica metoda SubDesc")
+    return True        
+    
+def SubDesc(A,b):
+    print(A)
+    print(b)
+    if CondSubDesc(A,b)==0:
+        return False
+    else:
+        n=len(b)
+        x=np.zeros((n,1))
+        x[n-1]=b[n-1]/A[n-1,n-1]
+        for i in range(n-2,-1,-1):
+            x[i]=(b[i]-A[i,i:]@x[i:])/A[i,i]
+    return x
+def GaussPT(A,b):
+    if CondSubDesc(A,b):
+        return False
+    n=len(b)
+    Aext=np.hstack((A,b))
+    indici=np.arange(n)
+    for k in range(n-1):
+        print('k=',k)
+        max_submat=np.abs(Aext[k:n,k:n]).max()
+        if max_submat==0:
+            print('Matricea sist nu e inv')
+            return False
+        poz=np.where(np.abs(Aext[k:n,k:n])==max_submat)
+        p_lin=poz[0][0]+k # updatez poz la poz reala in matricea mare
+        p_col=poz[1][0]+k
+        if p_lin>k:
+            Aext[[k,p_lin],:]=Aext[[p_lin,k],:]
+        if p_col>k:
+            Aext[:,[k,p_col]]=Aext[:,[p_col,k]]
+            indici[[k,p_col]]=indici[[p_col,k]]
+        for l in range(k+1,n):
+            m=Aext[l,k]/Aext[k,k]
+            Aext[l,:]=Aext[l,:]-m*Aext[k,:]
+        print(Aext)
+    x=np.zeros((n,1))
+    x[indici]=SubDesc(Aext[:,0:n],Aext[:,n])
+    return x[np.sort(indici)]
+
+print('(c)')
+A=np.array([[10**-12,1.,-1],
+            [40,-60,0],
+            [3,-4,5]])
+
+b=np.array([[17.+10**-12],
+            [-1160],
+            [-62]])
+
+
+x=GaussPT(A,b)
+print(x)
