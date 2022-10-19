@@ -1,0 +1,64 @@
+#Metoda Gauss Pivotare partiala
+import numpy as np
+def CondSubDesc(A,b):
+    if np.shape(A)[0]!=np.shape(A)[1]:
+        print("Matricea sistemului nu este patratica")
+        return False
+    if np.shape(A)[0]!=np.shape(b)[0]:
+        print("Matricea sistemului si vectorul b nu sunt compatibili")
+        return False
+    for i in range(np.shape(A)[0]):
+        if A[i,i]==0:
+            print("Matricea sistemului nu este inversabila")
+            return False
+        for j in range(i):
+            if A[i,j]!=0:
+                print("Matricea sistemului nu este superior triunghiulara")
+                return False
+    print("Se poate aplica metoda SubDesc")
+    return True        
+    
+def SubDesc(A,b):
+    print(A)
+    print(b)
+    if CondSubDesc(A,b)==0:
+        return False
+    else:
+        n=len(b)
+        x=np.zeros((n,1))
+        x[n-1]=b[n-1]/A[n-1,n-1]
+        for i in range(n-2,-1,-1):
+            x[i]=(b[i]-A[i,i:]@x[i:])/A[i,i]
+    return x
+    
+def MEGPP(A,b):
+    n=len(b)
+    Aext=np.hstack((A,b))
+    indici=np.arange(n)
+    for k in range(n-1):
+        max_col=np.abs(Aext[k:n,k]).max()
+        if max_col==0:
+            print("Matricea sistemului nu este inversabila")
+            return False
+        poz=np.where(np.abs(Aext[k:n,k])==max_col)
+        p_col=poz[0][0]+k
+        if p_col>k:
+            Aext[:,[k,p_col]]=Aext[:,[p_col,k]]
+            indici[[k,p_col]]=indici[[p_col,k]]
+            
+        for i in range(k+1,n):
+            m=Aext[i,k]/Aext[k,k]
+            Aext[i,:]=Aext[i,:]-m*Aext[k,:]
+        print(Aext)
+    x=np.zeros((n,1))    
+    x[indici]=SubDesc(Aext[:,0:n],Aext[:,n])
+    return x[np.sort(indici)]
+A=np.array([[2.,-3,2],
+            [-4,2,-6],
+            [2,2,4]])
+
+b=np.array([[5.],
+            [14],
+            [8]])
+x=MEGPP(A,b)
+print(x)
