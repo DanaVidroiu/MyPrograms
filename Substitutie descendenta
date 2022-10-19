@@ -1,0 +1,44 @@
+#Substitutie descendenta
+import numpy as np
+def CondSubDesc(A,b):
+    if np.shape(A)[0]!=np.shape(A)[1]:
+        print("Matricea sistemului nu este patratica")
+        return False
+    if np.shape(A)[0]!=np.shape(b)[0]:
+        print("Matricea sistemului si vectorul b nu sunt compatibili")
+        return False
+    for i in range(np.shape(A)[0]):
+        if A[i,i]==0:
+            print("Matricea sistemului nu este inversabila")
+            return False
+        for j in range(i):
+            if A[i,j]!=0:
+                print("Matricea sistemului nu este superior triunghiulara")
+                return False
+    print("Se poate aplica metoda Substitutiei Descendente")
+    return True        
+           
+    
+def SubDesc(A,b):
+    if CondSubDesc(A,b)==0:
+        return False
+    else:
+       n=len(b)
+       x=np.zeros((n,1))
+       x[n-1]=b[n-1]/A[n-1,n-1]
+       for k in range(n-2,-1,-1):
+           x[k]=(b[k]-A[k,k:]@x[k:])/A[k,k]
+       print(x)
+       return x
+A=np.array([[2,-1,-2],
+            [0,4,4],
+            [0,0,1]])
+
+b=np.array([[2.],
+            [3],
+            [3]])
+x=SubDesc(A,b)
+
+    
+    
+
