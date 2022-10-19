@@ -1,0 +1,38 @@
+#factorizarea Cholesky
+import numpy as np
+def Cholesky(A):
+    if np.shape(A)[0]!=np.shape(A)[1]:
+        print("Matricea nu este patratica")
+        return False
+    n=np.shape(A)[0]
+    for i in range(n-1):
+        for j in range(i+1,n):
+            if A[i,j]!=A[j,i]:
+                print("Matricea nu este simetrica")
+                return False
+    if n==1:
+       if A<0:
+           print("Matricea nu este pozitiv definita")
+           return False
+       else:
+           L=np.sqrt(A)
+           return L
+    else:
+        L=np.zeros((n,n))
+        if(A[0,0]<0):
+            print("A nu este poz def")
+            return False
+        else:
+            L[0,0]=np.sqrt(A[0,0])
+            L[1:,0]=A[1:,0]/L[0,0]
+            S=A[1:,1:]-np.outer(L[1:,0],L[1:,0])
+            L[1:,1:]=Cholesky(S)
+            
+            return L
+A=np.array([[25.,15,-5],
+           [15,18,0],
+           [-5,0,11]])
+
+L=Cholesky(A)
+print(L)
+print(L@np.transpose(L))
